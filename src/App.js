@@ -1,25 +1,63 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Form from './components/Form'
+import Todo from './components/Todo'
+import Switch from './components/Switch';
 
 class App extends Component {
+
+  state = {
+    todos: [{name: 'Learn ReactJS', done: false}],
+    isVisible: true
+  }
+
+  handleSubmit = (value) => {
+    const { todos } = this.state;
+    todos.push({ name: value, done: false })
+    this.setState({
+      todos: todos
+    })
+  }
+
+  handleDelete = (index) => {
+    const { todos } = this.state;
+    todos.splice(index, 1);
+    this.setState({
+      todos: todos,
+    })
+  }
+
+  handleCheckbox = (index) => {
+    const { todos } = this.state;
+    todos[index].done = !todos[index].done
+    this.setState({
+      todos: todos,
+    })
+  }
+
+  renderSomething = () => {
+    return <h3>render something</h3>
+  }
+
   render() {
+    const { todos, isVisible } = this.state;
+    const result = isVisible || 'hola';
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        {isVisible ? <h1>Todo App</h1> : this.renderSomething()}
+        {isVisible && this.renderSomething()}
+        <Switch value={isVisible ? 'loading' : 'loaded'}/>
+        <Form onSubmit={this.handleSubmit} />
+        <ul>
+          { todos.map((todo, index) => {
+            return <Todo 
+              todo={todo} 
+              key={index}
+              index={index}
+              onDelete={this.handleDelete} 
+              onCheck={this.handleCheckbox}
+            />
+          })}
+        </ul>
       </div>
     );
   }
